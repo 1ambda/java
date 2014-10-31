@@ -1,0 +1,12 @@
+[submodule "servlet"]
+	path = servlet
+	url = git@github.com:springbreak/servlet.git
+[submodule "spring"]
+	path = spring
+	url = git@github.com:springbreak/spring.git
+[submodule "spring-boot"]
+	path = spring-boot
+	url = git@github.com:springbreak/spring-boot.git
+[submodule "api"]
+	path = api
+	url = git@github.com:springbreak/api.git
