@@ -1,7 +1,3 @@
-# Java note
+# Java Note
 
-1. java API
-2. sevlet
-3. spring
-4. spring boot
-
+1. [Java Interview Questions - Collection Framework](http://1ambda.github.io/java-interview-questions-collection-framework/)  
