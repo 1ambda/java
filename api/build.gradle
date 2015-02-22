@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'log4j:log4j:1.2.17'
+  testCompile 'junit:junit:4.11'
+  testCompile 'org.hamcrest:hamcrest-all:1.3'
+}
