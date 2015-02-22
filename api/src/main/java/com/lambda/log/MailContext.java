@@ -1,4 +1,4 @@
-package lambda;
+package com.lambda.log;
 
 public class MailContext {
   
