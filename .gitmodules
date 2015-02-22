@@ -7,6 +7,3 @@
 [submodule "spring-boot"]
 	path = spring-boot
 	url = git@github.com:springbreak/spring-boot.git
-[submodule "api"]
-	path = api
-	url = git@github.com:springbreak/api.git
