@@ -1,4 +1,4 @@
-package com.lambda.log;
+package com.api.log;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

@@ -1,4 +1,4 @@
-package com.lambda.string;
+package com.api.string;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.*;

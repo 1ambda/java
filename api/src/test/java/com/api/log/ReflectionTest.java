@@ -1,4 +1,4 @@
-package com.lambad.log;
+package com.api.log;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -8,11 +8,11 @@ import java.lang.reflect.Proxy;
 
 import org.junit.Test;
 
-import com.lambda.log.LogMailSender;
-import com.lambda.log.LoggingHandler;
-import com.lambda.log.MailContext;
-import com.lambda.log.MailSender;
-import com.lambda.log.SmtpMailSender;
+import com.api.log.LogMailSender;
+import com.api.log.LoggingHandler;
+import com.api.log.MailContext;
+import com.api.log.MailSender;
+import com.api.log.SmtpMailSender;
 
 
 public class ReflectionTest {

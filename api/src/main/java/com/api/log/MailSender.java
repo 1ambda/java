@@ -1,4 +1,4 @@
-package com.lambda.log;
+package com.api.log;
 
 public interface MailSender {
   

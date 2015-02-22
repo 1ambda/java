@@ -1,4 +1,4 @@
-package com.lambda.log;
+package com.api.log;
 
 public class SmtpMailSender implements MailSender {
   

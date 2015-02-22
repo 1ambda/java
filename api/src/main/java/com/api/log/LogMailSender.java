@@ -1,4 +1,4 @@
-package com.lambda.log;
+package com.api.log;
 
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
