@@ -1,0 +1,14 @@
+# Serialization
+
+- The class must implement the `java.io.Serializable` interface 
+- All of the fields in the class must be serializable. If a field is not serializable, 
+it must be marked `transient`
+
+```java
+public final void writeObject(Object x) throws IOException
+
+public final Object readObject() throws IOException, ClassNotFoundException
+```
+
+
+

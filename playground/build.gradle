@@ -1,0 +1,58 @@
+buildscript {
+    ext {
+        springBootVersion = '1.3.0.M2'
+    }
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'spring-boot' 
+
+jar {
+    baseName = 'java-playground'
+    version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url "https://repo.spring.io/snapshot" }
+    maven { url "https://repo.spring.io/milestone" }
+}
+
+
+dependencies {
+    compile("org.springframework.boot:spring-boot:1.2.5.RELEASE")
+    compile("org.springframework.boot:spring-boot-autoconfigure:1.2.5.RELEASE")
+    compile("org.springframework:spring-aop:4.1.7.RELEASE")
+    compile("commons-logging:commons-logging:1.2")
+    compile("commons-io:commons-io:2.4")
+    compile("org.aspectj:aspectjrt:1.8.6")
+    compile("org.aspectj:aspectjweaver:1.8.6")
+
+    testCompile("org.springframework:spring-test:4.1.7.RELEASE")
+    testCompile("junit:junit:4.12")
+    testCompile("org.assertj:assertj-core:3.1.0")
+}
+
+
+eclipse {
+    classpath {
+         containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+         containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}
