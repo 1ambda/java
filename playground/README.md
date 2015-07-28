@@ -1,9 +1,12 @@
 # Java Playground
 
-## TODO
 
-- Serialization
+## TODO 
+
+- ~~Serialization~~
 - Enum
+- Annotation
 - Gradle Profile
+- AOP
 - Thrift
 - Netty
