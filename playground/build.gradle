@@ -8,14 +8,16 @@ buildscript {
         maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}") 
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'net.saliman:gradle-properties-plugin:1.4.3'
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'spring-boot' 
+apply plugin:   'java'
+apply plugin:   'eclipse'
+apply plugin:   'idea'
+apply plugin:   'spring-boot'
+apply plugin:   'net.saliman.properties'
 
 jar {
     baseName = 'java-playground'
@@ -23,7 +25,7 @@ jar {
 }
 
 run {
-    main = 'com.github.lambda.spring.data.jpa.Application'
+    // main = 'com.github.lambda.spring.data.jpa.Application'
 }
 
 sourceCompatibility = 1.8
@@ -35,12 +37,13 @@ repositories {
     maven { url "https://repo.spring.io/milestone" }
 }
 
-
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa:1.2.5.RELEASE')
+    compile('org.springframework.boot:spring-boot-starter-data-rest:1.2.5.RELEASE')
     compile('org.springframework.boot:spring-boot-starter-test')
     compile('com.h2database:h2:1.4.187')
     compile('commons-io:commons-io:2.4')
+    provided "org.projectlombok:lombok:1.16.4"
 
     testCompile('org.mockito:mockito-all:2.0.2-beta')
     testCompile('org.assertj:assertj-core:3.1.0')
