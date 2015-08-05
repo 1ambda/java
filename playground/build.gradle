@@ -40,13 +40,16 @@ repositories {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-jpa:1.2.5.RELEASE')
     compile('org.springframework.boot:spring-boot-starter-data-rest:1.2.5.RELEASE')
-    compile('org.springframework.boot:spring-boot-starter-test')
+    compile('org.springframework.boot:spring-boot-starter-actuator:1.2.5.RELEASE')
+
     compile('com.h2database:h2:1.4.187')
     compile('commons-io:commons-io:2.4')
-    provided "org.projectlombok:lombok:1.16.4"
+    compile "org.projectlombok:lombok:1.16.4"
 
+    testCompile('junit:junit:4.12' )
     testCompile('org.mockito:mockito-all:2.0.2-beta')
     testCompile('org.assertj:assertj-core:3.1.0')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
 

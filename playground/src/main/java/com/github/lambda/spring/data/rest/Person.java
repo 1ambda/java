@@ -1,7 +1,8 @@
 package com.github.lambda.spring.data.rest;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+
+import javax.persistence.Entity;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
