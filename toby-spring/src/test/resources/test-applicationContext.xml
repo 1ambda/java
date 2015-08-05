@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value="org.h2.Driver"></property>
+	<property name="url" value="jdbc:h2:mem:spring;DB_CLOSE_DELAY=-1"></property>
+	<property name="username" value="sa"></property>
+	<property name="password" value=""></property>
+</bean>
+
+<jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
+    <jdbc:script location="classpath:test-database.sql" />
+</jdbc:initialize-database>
+
+<bean id="userDao" class="com.github.lambda.dao.UserDaoJdbc"> </bean>
+
+
+<bean id="userService" class="com.github.lambda.service.TxFactoryBean">
+  <property name="target" ref="userServiceImpl"></property>
+  <property name="txManager" ref="transactionManager"></property>
+  <property name="pattern" value="upgradeLevels"></property>
+  <property name="serviceInterface" value="com.github.lambda.service.UserService"></property>
+</bean>
+
+<bean id="userServiceImpl" class="com.github.lambda.service.UserServiceImpl">
+  <property name="mailSender" ref="mailSender"></property>
+  <property name="userDao" ref="userDao"></property>
+</bean>
+
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+  <property name="dataSource" ref="dataSource"></property> 
+</bean>
+
+<bean id="mailSender" class="com.github.lambda.util.DummyMailSender">
+</bean>
+
+<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+	<property name="dataSource" ref="dataSource"></property>
+</bean>
+</beans>
+
+
