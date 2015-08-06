@@ -3,6 +3,7 @@ package com.github.lambda.dao;
 import com.github.lambda.domain.Level;
 import com.github.lambda.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 

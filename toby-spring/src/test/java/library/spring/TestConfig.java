@@ -1,4 +1,4 @@
-package library.spring.factorybean;
+package library.spring;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
