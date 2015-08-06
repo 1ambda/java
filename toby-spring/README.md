@@ -62,3 +62,14 @@ public class TxFactoryBean implements FactoryBean<Object> {
 	}
 }
 ```
+
+### ProxyFactoryBean
+
+스프링의 `ProxyFactoryBean` 은 프록시 생성작업만을 담당하고, 부가기능은 별도의 빈에 둘 수 있다. 프록시에서 사용할 부가기능은 
+`MethodInterceptor` 인터페이스를 구현해서 만든다. 
+
+- `InvocationHandler.invoke()` 는 타깃 오브젝트에 대한 정보를 제공하지 않으므로, 타깃을 `InvocationHandler` 가 구현한 클래스가 직접 알고 있어야 한다.
+- `MethodInterceptor.invoke()` 는 `ProxyFactoryBean` 으로부터 타깃을 제공받으므로, 타깃 오브젝트와 상관 없이 독립적으로 만들어질 수 있다. 따라서 여러 프록시에서 함께 사용 가능하며, 싱글톤 빈으로도 등록이 가능하다.
+
+
+

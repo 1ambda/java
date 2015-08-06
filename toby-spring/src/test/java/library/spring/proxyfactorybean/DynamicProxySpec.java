@@ -3,6 +3,7 @@ package library.spring.proxyfactorybean;
 import library.spring.TestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,6 +28,13 @@ public class DynamicProxySpec {
 
     @Test
     public void test_Spring_ProxyFactoryBean() {
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(new HelloImpl());
+        pfBean.addAdvice(new UppercaseAdvice());
+
+        Hello proxiedHello = (Hello) pfBean.getObject();
+
+        checkProxiedHello(proxiedHello);
     }
 
     private void checkProxiedHello(Hello proxiedHello) {
