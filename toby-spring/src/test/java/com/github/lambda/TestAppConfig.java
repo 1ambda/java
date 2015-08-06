@@ -46,18 +46,19 @@ public class TestAppConfig {
     @Bean(name = "userDao")
     public UserDao getUserDao() { return new UserDaoJdbc(); }
 
-    @Bean(name = "useService")
-    public UserService getUserService() throws Exception {
+    @Bean(name = "userService")
+    public TxFactoryBean getUserService() throws Exception {
         TxFactoryBean factory = new TxFactoryBean();
         factory.setTarget(getUserServiceImpl());
         factory.setTxManager(getTransactionManager());
+        factory.setPattern("upgradeLevels");
         factory.setServiceInterface(UserService.class);
 
-        return (UserService) factory.getObject();
-    };
+        return factory;
+    }
 
     @Bean(name = "getUserService")
-    public UserService getUserServiceImpl() {
+    public UserServiceImpl getUserServiceImpl() {
         UserServiceImpl service = new UserServiceImpl();
         service.setMailSender(getMailSender());
         service.setUserDao(getUserDao());

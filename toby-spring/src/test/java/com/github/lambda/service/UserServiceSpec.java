@@ -1,5 +1,6 @@
 package com.github.lambda.service;
 
+import com.github.lambda.TestAppConfig;
 import com.github.lambda.dao.UserDao;
 import com.github.lambda.domain.Level;
 import com.github.lambda.domain.User;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailSender;
 import org.springframework.test.annotation.DirtiesContext;
@@ -25,8 +27,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/test-applicationContext.xml")
-public class UserServiceTest {
+@ContextConfiguration(classes = TestAppConfig.class)
+public class UserServiceSpec {
 	
 	@Autowired
 	ApplicationContext context;
@@ -35,6 +37,7 @@ public class UserServiceTest {
 	MailSender mailSender;
 
 	@Autowired
+	@Qualifier("getUserService")
 	UserServiceImpl userService;
 
 	@Autowired
@@ -128,7 +131,7 @@ public class UserServiceTest {
 
 		TxFactoryBean txProxyFactoryBean = (TxFactoryBean)
 				context.getBean("&userService", TxFactoryBean.class);
-		
+
 		txProxyFactoryBean.setTarget(testUserService);
 		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
 		
