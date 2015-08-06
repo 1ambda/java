@@ -1,11 +1,12 @@
-package library;
+package library.spring.factorybean;
 
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessageFactoryBean implements FactoryBean<Message> {
-	
-	String text;
 
+	String text;
 	public void setText(String text) {
 		this.text = text;
 	}

@@ -11,7 +11,7 @@
 </bean>
 
 <jdbc:initialize-database data-source="dataSource" ignore-failures="DROPS">
-    <jdbc:script location="classpath:test-database.sql" />
+    <jdbc:script location="classpath:schema.sql" />
 </jdbc:initialize-database>
 
 <bean id="userDao" class="com.github.lambda.dao.UserDaoJdbc"> </bean>

@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.*;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UserTest {
+public class UserSpec {
   
   User user;
 
