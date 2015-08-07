@@ -4,6 +4,8 @@ import library.spring.TestConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,6 +37,22 @@ public class DynamicProxySpec {
         Hello proxiedHello = (Hello) pfBean.getObject();
 
         checkProxiedHello(proxiedHello);
+    }
+
+    @Test
+    public void test_PointCutAdvisor() {
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("sayH*");
+
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(new HelloImpl());
+        pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+
+        Hello proxiedHello = (Hello) pfBean.getObject();
+
+        assertThat(proxiedHello.sayHi("lambda")).isEqualTo("HI LAMBDA");
+        assertThat(proxiedHello.sayHello("lambda")).isEqualTo("HELLO LAMBDA");
+        assertThat(proxiedHello.sayThankYou("lambda")).isEqualTo("Thank You lambda");
     }
 
     private void checkProxiedHello(Hello proxiedHello) {

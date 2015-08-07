@@ -2,10 +2,13 @@ package com.github.lambda;
 
 import com.github.lambda.dao.UserDao;
 import com.github.lambda.dao.UserDaoJdbc;
-import com.github.lambda.service.TxFactoryBean;
-import com.github.lambda.service.UserService;
+import com.github.lambda.service.TransactionAdvice;
 import com.github.lambda.service.UserServiceImpl;
 import com.github.lambda.util.DummyMailSender;
+import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -19,6 +22,14 @@ import org.springframework.mail.MailSender;
 
 @Configuration
 public class TestAppConfig {
+
+    @Autowired DriverManagerDataSource dataSource;
+    @Autowired UserDao userDao;
+    @Autowired MailSender mailSender;
+    @Autowired UserServiceImpl userServiceImpl;
+    @Autowired NameMatchMethodPointcut transactionPointcut;
+    @Autowired TransactionAdvice transactionAdvice;
+
     @Bean(name = "dataSource")
     public DriverManagerDataSource getDataSource() {
         DriverManagerDataSource source = createDataSource();
@@ -47,21 +58,19 @@ public class TestAppConfig {
     public UserDao getUserDao() { return new UserDaoJdbc(); }
 
     @Bean(name = "userService")
-    public TxFactoryBean getUserService() throws Exception {
-        TxFactoryBean factory = new TxFactoryBean();
-        factory.setTarget(getUserServiceImpl());
-        factory.setTxManager(getTransactionManager());
-        factory.setPattern("upgradeLevels");
-        factory.setServiceInterface(UserService.class);
+    public ProxyFactoryBean getUserService() throws Exception {
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(userServiceImpl);
+        pfBean.setInterceptorNames("transactionAdvisor");
 
-        return factory;
+        return pfBean;
     }
 
     @Bean(name = "getUserService")
     public UserServiceImpl getUserServiceImpl() {
         UserServiceImpl service = new UserServiceImpl();
-        service.setMailSender(getMailSender());
-        service.setUserDao(getUserDao());
+        service.setMailSender(mailSender);
+        service.setUserDao(userDao);
 
         return service;
     }
@@ -74,14 +83,33 @@ public class TestAppConfig {
     @Bean(name = "transactionManager")
     public DataSourceTransactionManager getTransactionManager() {
         DataSourceTransactionManager manager = new DataSourceTransactionManager();
-        manager.setDataSource(getDataSource());
-
+        manager.setDataSource(dataSource);
         return manager;
     }
 
     @Bean(name = "jdbcTemplate")
     public JdbcTemplate getJdbcTemplate() {
-        DriverManagerDataSource source = getDataSource();
-        return new JdbcTemplate(source);
+        return new JdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public NameMatchMethodPointcut getTransactionPointcut() {
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("upgrade*");
+        return pointcut;
+    }
+
+    @Bean
+    public TransactionAdvice getTransactionAdvice() {
+        return new TransactionAdvice();
+    }
+
+    @Bean(name = "transactionAdvisor")
+    public DefaultPointcutAdvisor getTransactionAdvisor() {
+        DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
+        advisor.setPointcut(transactionPointcut);
+        advisor.setAdvice(transactionAdvice);
+
+        return advisor;
     }
 }

@@ -71,5 +71,58 @@ public class TxFactoryBean implements FactoryBean<Object> {
 - `InvocationHandler.invoke()` 는 타깃 오브젝트에 대한 정보를 제공하지 않으므로, 타깃을 `InvocationHandler` 가 구현한 클래스가 직접 알고 있어야 한다.
 - `MethodInterceptor.invoke()` 는 `ProxyFactoryBean` 으로부터 타깃을 제공받으므로, 타깃 오브젝트와 상관 없이 독립적으로 만들어질 수 있다. 따라서 여러 프록시에서 함께 사용 가능하며, 싱글톤 빈으로도 등록이 가능하다.
 
+```java
+@Bean(name = "userService")
+public ProxyFactoryBean getUserService() throws Exception {
+    ProxyFactoryBean pfBean = new ProxyFactoryBean();
+    pfBean.setTarget(userServiceImpl);
+    pfBean.setInterceptorNames("transactionAdvisor");
+
+    return pfBean;
+}
+
+@Bean
+public NameMatchMethodPointcut getTransactionPointcut() {
+    NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+    pointcut.setMappedName("upgrade*");
+    return pointcut;
+}
+
+@Bean
+public TransactionAdvice getTransactionAdvice() {
+    return new TransactionAdvice();
+}
+
+@Bean(name = "transactionAdvisor")
+public DefaultPointcutAdvisor getTransactionAdvisor() {
+    DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
+    advisor.setPointcut(transactionPointcut);
+    advisor.setAdvice(transactionAdvice);
+
+    return advisor;
+}
+
+public class TransactionAdvice implements MethodInterceptor {
+    @Autowired
+    PlatformTransactionManager manager;
+
+    @Override
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+
+        TransactionStatus status = manager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            Object result = invocation.proceed();
+            manager.commit(status);
+            return result;
+        } catch (RuntimeException e) {
+            manager.rollback(status);
+            throw e;
+        }
+    }
+}
+```
+
+포인트컷과 어드바이스를 재활용할 수 있으나, 그 때 마다 `ProxyFactoryBean` 를 새롭게 생성해야 한다. 
 
 

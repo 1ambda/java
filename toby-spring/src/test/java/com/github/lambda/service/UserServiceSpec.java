@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -129,8 +130,7 @@ public class UserServiceSpec {
 		testUserService.setUserDao(this.userDao);
 		testUserService.setMailSender(mailSender);
 
-		TxFactoryBean txProxyFactoryBean = (TxFactoryBean)
-				context.getBean("&userService", TxFactoryBean.class);
+		ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
 
 		txProxyFactoryBean.setTarget(testUserService);
 		UserService txUserService = (UserService) txProxyFactoryBean.getObject();
