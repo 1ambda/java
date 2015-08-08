@@ -129,3 +129,38 @@ public class TransactionAdvice implements MethodInterceptor {
 
 `DefaultAdvisorAutoProxyCreator` 는 등록된 빈 중에서 `Advisor` 를 구현한 것을 모두 찾는다. 그리고 생성된 모든 빈에 대해서 
 `Pointcut` 을 적용해 보면서 대상을 찾아 `Advice` 를 제공하는 프록시를 생성한다.
+
+### Annotation-based AOP
+
+```java
+@Aspect
+@Component
+public class TransactionAspect {
+    @Autowired
+    PlatformTransactionManager manager;
+
+    @Around("execution (* *..*.upgradeLevels(..))")
+    public Object transactAround(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        TransactionStatus status = manager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            Object result = joinPoint.proceed();
+            manager.commit(status);
+            return result;
+        } catch (RuntimeException e) {
+            manager.rollback(status);
+            throw e;
+        }
+    }
+}
+```
+
+```java
+@Configuration
+@EnableAspectJAutoProxy(proxyTargetClass=true)
+@ComponentScan("com.github.lambda")
+public class TestAppConfig {
+    ...
+    ...
+```

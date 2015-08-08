@@ -2,17 +2,14 @@ package com.github.lambda;
 
 import com.github.lambda.dao.UserDao;
 import com.github.lambda.dao.UserDaoJdbc;
-import com.github.lambda.service.NameMatchClassMethodPointcut;
-import com.github.lambda.service.TestUserServiceImpl;
 import com.github.lambda.service.TransactionAdvice;
-import com.github.lambda.service.UserServiceImpl;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.support.NameMatchMethodPointcut;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
+import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -23,14 +20,13 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.mail.MailSender;
 
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass=true)
 @ComponentScan("com.github.lambda")
 public class TestAppConfig {
 
     @Autowired DriverManagerDataSource dataSource;
     @Autowired UserDao userDao;
     @Autowired MailSender mailSender;
-    @Autowired NameMatchMethodPointcut transactionPointcut;
-    @Autowired TransactionAdvice transactionAdvice;
 
     @Bean(name = "dataSource")
     public DriverManagerDataSource getDataSource() {
@@ -71,31 +67,4 @@ public class TestAppConfig {
     public JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(dataSource);
     }
-
-    @Bean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
-        DefaultAdvisorAutoProxyCreator creator = new DefaultAdvisorAutoProxyCreator();
-        creator.setProxyTargetClass(true);
-
-        return creator;
-    }
-
-    @Bean(name = "transactionPointcut")
-    public NameMatchClassMethodPointcut getTransactionPointcut() {
-        NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
-        pointcut.setMappedClassName("*ServiceImpl");
-        pointcut.setMappedName("upgrade*");
-
-        return pointcut;
-    }
-
-    @Bean(name = "transactionAdvisor")
-    public DefaultPointcutAdvisor getTransactionAdvisor() {
-        DefaultPointcutAdvisor advisor = new DefaultPointcutAdvisor();
-        advisor.setPointcut(transactionPointcut);
-        advisor.setAdvice(transactionAdvice);
-
-        return advisor;
-    }
-
 }
