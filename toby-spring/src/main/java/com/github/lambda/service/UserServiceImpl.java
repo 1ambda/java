@@ -6,9 +6,11 @@ import com.github.lambda.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component("userService")
 public class UserServiceImpl implements UserService {
 
 	public static final int MIN_LOGIN_COUNT_FOR_SILVER = 50;

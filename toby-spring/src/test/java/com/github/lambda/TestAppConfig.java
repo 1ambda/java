@@ -2,14 +2,16 @@ package com.github.lambda;
 
 import com.github.lambda.dao.UserDao;
 import com.github.lambda.dao.UserDaoJdbc;
+import com.github.lambda.service.NameMatchClassMethodPointcut;
+import com.github.lambda.service.TestUserServiceImpl;
 import com.github.lambda.service.TransactionAdvice;
 import com.github.lambda.service.UserServiceImpl;
-import com.github.lambda.util.DummyMailSender;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,12 +23,12 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.mail.MailSender;
 
 @Configuration
+@ComponentScan("com.github.lambda")
 public class TestAppConfig {
 
     @Autowired DriverManagerDataSource dataSource;
     @Autowired UserDao userDao;
     @Autowired MailSender mailSender;
-    @Autowired UserServiceImpl userServiceImpl;
     @Autowired NameMatchMethodPointcut transactionPointcut;
     @Autowired TransactionAdvice transactionAdvice;
 
@@ -57,28 +59,6 @@ public class TestAppConfig {
     @Bean(name = "userDao")
     public UserDao getUserDao() { return new UserDaoJdbc(); }
 
-    @Bean(name = "userService")
-    public ProxyFactoryBean getUserService() throws Exception {
-        ProxyFactoryBean pfBean = new ProxyFactoryBean();
-        pfBean.setTarget(userServiceImpl);
-        pfBean.setInterceptorNames("transactionAdvisor");
-
-        return pfBean;
-    }
-
-    @Bean(name = "getUserService")
-    public UserServiceImpl getUserServiceImpl() {
-        UserServiceImpl service = new UserServiceImpl();
-        service.setMailSender(mailSender);
-        service.setUserDao(userDao);
-
-        return service;
-    }
-
-    @Bean(name = "mailSender")
-    public MailSender getMailSender() {
-        return new DummyMailSender();
-    }
 
     @Bean(name = "transactionManager")
     public DataSourceTransactionManager getTransactionManager() {
@@ -93,15 +73,20 @@ public class TestAppConfig {
     }
 
     @Bean
-    public NameMatchMethodPointcut getTransactionPointcut() {
-        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
-        pointcut.setMappedName("upgrade*");
-        return pointcut;
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
+        DefaultAdvisorAutoProxyCreator creator = new DefaultAdvisorAutoProxyCreator();
+        creator.setProxyTargetClass(true);
+
+        return creator;
     }
 
-    @Bean
-    public TransactionAdvice getTransactionAdvice() {
-        return new TransactionAdvice();
+    @Bean(name = "transactionPointcut")
+    public NameMatchClassMethodPointcut getTransactionPointcut() {
+        NameMatchClassMethodPointcut pointcut = new NameMatchClassMethodPointcut();
+        pointcut.setMappedClassName("*ServiceImpl");
+        pointcut.setMappedName("upgrade*");
+
+        return pointcut;
     }
 
     @Bean(name = "transactionAdvisor")
@@ -112,4 +97,5 @@ public class TestAppConfig {
 
         return advisor;
     }
+
 }

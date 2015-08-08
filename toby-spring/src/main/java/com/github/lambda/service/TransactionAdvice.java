@@ -3,10 +3,12 @@ package com.github.lambda.service;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+@Component
 public class TransactionAdvice implements MethodInterceptor {
     @Autowired
     PlatformTransactionManager manager;

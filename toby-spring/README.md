@@ -125,4 +125,7 @@ public class TransactionAdvice implements MethodInterceptor {
 
 포인트컷과 어드바이스를 재활용할 수 있으나, 그 때 마다 `ProxyFactoryBean` 를 새롭게 생성해야 한다. 
 
+### DefaultAdvisorAutoProxyCreator
 
+`DefaultAdvisorAutoProxyCreator` 는 등록된 빈 중에서 `Advisor` 를 구현한 것을 모두 찾는다. 그리고 생성된 모든 빈에 대해서 
+`Pointcut` 을 적용해 보면서 대상을 찾아 `Advice` 를 제공하는 프록시를 생성한다.
