@@ -164,3 +164,45 @@ public class TestAppConfig {
     ...
     ...
 ```
+
+### DefaultTransactionDefinition
+
+`TransactionDefinition` 인터페이스는 트랜잭션 동작 방식에 영향을 줄 수 있는 네가지 속성을 정의하고 있다.
+
+#### Transaction Propagation
+
+이미 진행중인 트랜잭션이 있을 경우, 없을 경우에 어떻게 동작하는지를 결정한다.
+
+- **PROPAGATION_REQUIRED** 진행 중인 트랜잭션이 없을 경우 새로 시작하고, 있으면 이에 참여한다.
+- **PROPAGATION_REQUIRES_NEW** 항상 새로운 트랜잭션을 시작한다.
+- **PROPAGATION_NOT_SUPPORTED** 트랜잭션 없이 동작한다. 
+
+트랜잭션 매니저를 통해 트랜잭션을 시작하려고 할 때 `getTransaction()` 을 사용하는 이유는, 바로 이 트랜잭션 전파 속성 때문이다. 항상 트랜잭션을 새로 시작하는 것이 아니라, 
+트랜잭션이 이미 있는지 확인하고 현재 속성에 따라서 행동한다.
+
+#### Isolation Level
+
+`DefaultTransactionDefinition` 은 `DataSource` 에 지정된 격리 수준을 따른다.
+
+#### Timeout
+
+`DefaultTransactionDefinition` 은 기본 설정은 제한시간이 없는 것이다.
+
+#### Read Only
+
+<br/>
+
+위 4가지 속성을 설정하기 위해 스프링이 제공하는 `TransactionInterceptor` 를 이용할 수 있다. `TransactionInterceptor` 는 
+네 `PlatformTransactionManager` 와 `TransactionAttribute` 를 멤버로 가지는데, `TransactionAttribute` 의 경우 
+위 4가지 속성을 설정할 수 있고 `rollbackOn` 이용해 예외 발생시 행동을 지정할 수 있다.
+
+일반적으로 스프링은 런타임예외시 트랜잭션을 롤백하고, 체크예외시 의미있는 비즈니스 로직이라 보고 트랜잭션을 커밋한다. `rollbackOn` 메소드를 이용하면 이것을 변경할 수 있다.
+
+<br/>
+
+### 프록시 방식 AOP 는 같은 타깃 오브젝트 내의 메소드를 호출할 때는 적용되지 않는다.
+
+
+
+
+

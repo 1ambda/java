@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.mail.MailSender;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -150,5 +151,10 @@ public class UserServiceSpec {
 		} else {
 			assertThat(userUpgraded.getLevel(), is(user.getLevel()));
 		}
+	}
+
+	@Test(expected=TransientDataAccessException.class)
+	public void readOnlyTransactionAttribute() {
+		testUserService.getAll();
 	}
 }

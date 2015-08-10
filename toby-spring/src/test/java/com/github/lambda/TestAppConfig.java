@@ -2,9 +2,6 @@ package com.github.lambda;
 
 import com.github.lambda.dao.UserDao;
 import com.github.lambda.dao.UserDaoJdbc;
-import com.github.lambda.service.TransactionAdvice;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

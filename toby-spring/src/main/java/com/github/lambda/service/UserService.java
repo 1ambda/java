@@ -2,10 +2,16 @@ package com.github.lambda.service;
 
 import com.github.lambda.domain.User;
 
+import java.util.List;
+
 public interface UserService {
 
-	public abstract void add(User u);
+	void add(User u);
+    User get(String id);
+    List<User> getAll();
+    void deleteAll();
+    void update(User user);
 
-	public abstract void upgradeLevels();
+	void upgradeLevels();
 
 }
