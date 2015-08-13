@@ -6,16 +6,12 @@ import com.github.lambda.domain.Level;
 import com.github.lambda.domain.User;
 import com.github.lambda.util.MockMailSender;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.dao.TransientDataAccessException;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,24 +34,13 @@ public class UserServiceSpec {
 	ApplicationContext context;
 
 	@Autowired
-	MailSender mailSender;
-
-	@Autowired
-	@Qualifier("userService")
 	UserServiceImpl userService;
 
     @Autowired
-    @Qualifier("testUserService")
-	UserServiceImpl testUserService;
+	TestUserServiceImpl testUserService;
 
 	@Autowired
 	UserDao userDao;
-
-	@Autowired
-	DataSource dataSource;
-
-	@Autowired
-	PlatformTransactionManager transactionManager;
 
 	List<User> users;
 
@@ -128,9 +113,6 @@ public class UserServiceSpec {
 
 		userDao.deleteAll();
 
-		testUserService.setUserDao(this.userDao);
-		testUserService.setMailSender(mailSender);
-
 		for (User u : users) {
 			userDao.add(u);
 		}
@@ -153,7 +135,8 @@ public class UserServiceSpec {
 		}
 	}
 
-	@Test(expected=TransientDataAccessException.class)
+	// TODO
+	@Test(expected = TransientDataAccessResourceException.class)
 	public void readOnlyTransactionAttribute() {
 		testUserService.getAll();
 	}

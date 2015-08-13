@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Component("userService")
+@Transactional
 public class UserServiceImpl implements UserService {
 
 	public static final int MIN_LOGIN_COUNT_FOR_SILVER = 50;
@@ -40,11 +42,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public User get(String id) {
 		return userDao.get(id);
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<User> getAll() {
 		return userDao.getAll();
 	}

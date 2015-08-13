@@ -3,48 +3,49 @@ package com.github.lambda.dao;
 import com.github.lambda.domain.Level;
 import com.github.lambda.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-public class UserDaoJdbc implements UserDao{
+@Component
+public class UserDaoJdbc implements UserDao {
 
 	@Autowired
-	private JdbcTemplate jt;
+	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	private DataSource ds;
 
 	public void deleteAll() {
-		jt.update("delete from users");
+		jdbcTemplate.update("delete from users");
 	}
 
 	public int getCount() {
-		return jt.queryForObject("select count(*) from users", Integer.class);
+		return jdbcTemplate.queryForObject("select count(*) from users", Integer.class);
 	}
 
 	public void add(User user) throws DuplicationUserIdException {
 
 		try {
-			jt.update("INSERT INTO users(id, name, password, level, login, recommend, email)" +
-					" VALUES (?, ?, ?, ?, ?, ?, ?);",
-			          user.getId(), 
-			          user.getName(),
-			          user.getPassword(),
-			          user.getLevel().intValue(),
-			          user.getLogin(),
-			          user.getRecommend(),
-			          user.getEmail());
+			jdbcTemplate.update("INSERT INTO users(id, name, password, level, login, recommend, email)" +
+                            " VALUES (?, ?, ?, ?, ?, ?, ?);",
+                    user.getId(),
+                    user.getName(),
+                    user.getPassword(),
+                    user.getLevel().intValue(),
+                    user.getLogin(),
+                    user.getRecommend(),
+                    user.getEmail());
 		} catch (DuplicateKeyException e) {
 			throw new DuplicationUserIdException(e);
 		}
 	}
 
 	public User get(String id) {
-		return jt.queryForObject( "SELECT * from users WHERE id = ?",
+		return jdbcTemplate.queryForObject( "SELECT * from users WHERE id = ?",
 		                          new Object[] {id},
 		                          (rs, rowNum) -> {
 		                          	User user = new User();
@@ -60,7 +61,7 @@ public class UserDaoJdbc implements UserDao{
 
 	public List<User> getAll() {
 
-		return jt.query("SELECT * FROM users",
+		return jdbcTemplate.query("SELECT * FROM users",
 		                (rs, rowNum) -> { return new User(rs.getString(1), 
 		                	                rs.getString(2),
 		                	                rs.getString(3),
@@ -72,15 +73,14 @@ public class UserDaoJdbc implements UserDao{
 
 	@Override
 	public void update(User user) {
-		// TODO Auto-generated method stub
-		this.jt.update("UPDATE users SET name = ?, password = ?, "
-				+ "level = ?, login = ?, recommend = ? where id = ?", 
-				user.getName(), 
-				user.getPassword(), 
-				user.getLevel().intValue(),
-				user.getLogin(), 
-				user.getRecommend(),
-				user.getId());
+		this.jdbcTemplate.update("UPDATE users SET name = ?, password = ?, "
+                        + "level = ?, login = ?, recommend = ? where id = ?",
+                user.getName(),
+                user.getPassword(),
+                user.getLevel().intValue(),
+                user.getLogin(),
+                user.getRecommend(),
+                user.getId());
 	}
 
 }

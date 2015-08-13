@@ -1,12 +1,8 @@
 package com.github.lambda;
 
-import com.github.lambda.dao.UserDao;
-import com.github.lambda.dao.UserDaoJdbc;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -14,18 +10,14 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.mail.MailSender;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableAspectJAutoProxy(proxyTargetClass=true)
+@EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan("com.github.lambda")
 public class TestAppConfig {
 
-    @Autowired DriverManagerDataSource dataSource;
-    @Autowired UserDao userDao;
-    @Autowired MailSender mailSender;
-
-    @Bean(name = "dataSource")
+    @Bean
     public DriverManagerDataSource getDataSource() {
         DriverManagerDataSource source = createDataSource();
         DatabasePopulatorUtils.execute(createDatabasePopulator(), source);
@@ -49,19 +41,15 @@ public class TestAppConfig {
         return databasePopulator;
     }
 
-    @Bean(name = "userDao")
-    public UserDao getUserDao() { return new UserDaoJdbc(); }
-
-
     @Bean(name = "transactionManager")
     public DataSourceTransactionManager getTransactionManager() {
         DataSourceTransactionManager manager = new DataSourceTransactionManager();
-        manager.setDataSource(dataSource);
+        manager.setDataSource(getDataSource());
         return manager;
     }
 
-    @Bean(name = "jdbcTemplate")
+    @Bean
     public JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(dataSource);
+        return new JdbcTemplate(getDataSource());
     }
 }

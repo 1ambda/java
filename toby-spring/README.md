@@ -165,6 +165,7 @@ public class TestAppConfig {
     ...
 ```
 
+
 ### DefaultTransactionDefinition
 
 `TransactionDefinition` 인터페이스는 트랜잭션 동작 방식에 영향을 줄 수 있는 네가지 속성을 정의하고 있다.
@@ -202,7 +203,23 @@ public class TestAppConfig {
 
 ### 프록시 방식 AOP 는 같은 타깃 오브젝트 내의 메소드를 호출할 때는 적용되지 않는다.
 
+### @Transactional
 
+`@Transactional` 을 사용할 경우, `TransactionInterceptor` 는 메소드 이름 패턴 대신 `@Transactional` 에서 트랜잭션 속성을 가져오는 `AnnotationTransactionAttributeSource` 를 사용한다. 
+
+참고로, 인터페이스 프록시 AOP 가 아닌 다른 방식의 프록시를 사용할 경우 인터페이스에 작성된 `@Transactional` 는 동작하지 않으므로, 클래스에 어노테이션을 추가하는 편이 낫다.
+  
+```java
+@Configuration
+@EnableTransactionManagement
+@EnableAspectJAutoProxy(proxyTargetClass=true)
+@ComponentScan("com.github.lambda")
+public class TestAppConfig {
+    ...
+}
+
+
+```
 
 
 
